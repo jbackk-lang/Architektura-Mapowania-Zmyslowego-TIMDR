@@ -1,35 +1,62 @@
 @echo off
-setlocal
-
-REM PC_TIMDR Sensory Engine API -- uruchomienie na Windows
-REM Tworzy (jesli trzeba) lokalne srodowisko wirtualne, instaluje
-REM zaleznosci z requirements.txt i uruchamia lokalny serwer API
-REM na http://127.0.0.1:5000
-
+setlocal enabledelayedexpansion
 cd /d "%~dp0"
 
-if not exist venv (
-    echo [1/3] Tworze srodowisko wirtualne (venv)...
+echo ===============================================
+echo   PC_TIMDR Sensory Engine API - uruchamianie
+echo ===============================================
+echo.
+
+REM --- 0. Czy komenda "python" w ogole istnieje w PATH? ---
+where python >nul 2>nul
+if errorlevel 1 (
+    echo BLAD: nie znaleziono komendy "python" w PATH.
+    echo Zainstaluj Pythona z https://www.python.org/downloads/
+    echo i podczas instalacji zaznacz "Add python.exe to PATH".
+    goto END
+)
+
+python --version
+echo.
+
+REM --- 1. Utworz venv, jesli nie istnieje LUB jest niekompletny ---
+if not exist venv\Scripts\activate.bat (
+    echo [1/3] Tworze srodowisko wirtualne...
     python -m venv venv
-    if errorlevel 1 (
-        echo BLAD: nie udalo sie utworzyc srodowiska wirtualnego. Sprawdz, czy Python jest zainstalowany i dostepny w PATH.
-        pause
-        exit /b 1
+
+    if not exist venv\Scripts\activate.bat (
+        echo.
+        echo BLAD: tworzenie venv nie powiodlo sie ^(brak pliku venv\Scripts\activate.bat^).
+        echo.
+        echo Najczestsza przyczyna na Windows 10/11: komenda "python" wskazuje na
+        echo alias Microsoft Store zamiast prawdziwej instalacji Pythona ^(wyglada
+        echo na dzialajaca, ale nic realnie nie robi^). Sprawdz:
+        echo   Ustawienia - Aplikacje - Zaawansowane opcje aplikacji
+        echo   - Aliasy wykonywania aplikacji - wylacz alias dla "python.exe" i "python3.exe"
+        echo a nastepnie zainstaluj Pythona z https://www.python.org/downloads/
+        goto END
     )
 ) else (
     echo [1/3] Srodowisko wirtualne juz istnieje, pomijam tworzenie.
 )
 
 call venv\Scripts\activate.bat
-
-echo [2/3] Instaluje zaleznosci z requirements.txt...
-pip install -r requirements.txt --quiet
-if errorlevel 1 (
-    echo BLAD: instalacja zaleznosci nie powiodla sie.
-    pause
-    exit /b 1
+if not defined VIRTUAL_ENV (
+    echo BLAD: aktywacja venv nie powiodla sie ^(call venv\Scripts\activate.bat^).
+    goto END
 )
 
+REM --- 2. Zaleznosci (BEZ --quiet, zeby bledy byly widoczne) ---
+echo [2/3] Instaluje zaleznosci z requirements.txt...
+pip install -r requirements.txt
+if errorlevel 1 (
+    echo.
+    echo BLAD: instalacja zaleznosci nie powiodla sie - patrz komunikaty pip powyzej.
+    goto END
+)
+
+REM --- 3. Start API ---
+echo.
 echo [3/3] Uruchamiam PC_TIMDR Sensory Engine API...
 echo.
 echo    http://127.0.0.1:5000
@@ -39,4 +66,13 @@ echo.
 
 python api.py
 
-pause
+if errorlevel 1 (
+    echo.
+    echo BLAD: api.py zakonczyl sie bledem - patrz komunikaty powyzej.
+)
+
+:END
+echo.
+echo ===============================================
+echo Nacisnij dowolny klawisz, zeby zamknac to okno...
+pause >nul
