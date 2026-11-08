@@ -1,5 +1,9 @@
 # PC_TIMDR Sensory Engine: Transdukcja Pola Dynamicznego 🌀🎹
 
+<!-- TIMDR HUB LINKS -->
+> **Ekosystem TIMDR:** [Knowledge Hub — dokumentacja i wyszukiwarka](https://jbackk-lang.github.io/TIMDR-AI-Knowledge-Base/) · [Panel badawczy](https://jbackk-lang.github.io/) · [GIA-TIMDR — źródła](https://github.com/jbackk-lang/GIA-TIMDR) · [Research AI — lokalne wyszukiwanie semantyczne](https://github.com/jbackk-lang/TIMDR-AI-Knowledge-Base). Publiczna wyszukiwarka Huba jest tekstowa; semantyczna wymaga lokalnego uruchomienia.
+<!-- /TIMDR HUB LINKS -->
+
 ![Model walidatora](https://img.shields.io/badge/math--validator-2.0%20%7C%20v7.0%20Unified-blueviolet) ![Rdzeń frameworku](https://img.shields.io/badge/FIELDCORE-v3.0-blue) ![Licencja](https://img.shields.io/badge/License-MIT-green.svg)
 
 Interaktywna sensoryczna brama do **Uniwersalnej Geometrii Pola**. Ten moduł jest fizyczną i cyfrową instancją frameworków **GIA (Geometric Information Architecture)** i **TIMDR (Topological Information Mapping & Dynamic Resonance)**.
